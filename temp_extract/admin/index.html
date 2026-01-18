@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - Shiraz Apple Store</title>
+  <meta name="description" content="Admin panel for managing orders and tracking.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/edgespark-client.css">
+  <script>window.process = { env: { NODE_ENV: 'production' } };</script>
+</head>
+<body>
+  <div class="page-wrapper">
+    <!-- Header -->
+    <header class="header">
+      <div class="container header-content">
+        <a href="/" class="logo">
+          <img src="../assets/shiraz-logo.png" alt="Shiraz Apple Store">
+          <div class="logo-text">
+            <span class="logo-title">Shiraz Apple Store</span>
+            <span class="logo-subtitle">Apple Authorized Service Provider</span>
+          </div>
+        </a>
+        <button class="mobile-menu-btn">
+          <i class="fas fa-bars"></i>
+        </button>
+        <nav class="nav" id="mainNav">
+          <div class="dropdown">
+            <button onclick="toggleLangMenu()" class="nav-link lang-btn" id="langBtn" data-lang-key="nav_language">Language</button>
+            <div id="langMenu" class="lang-content">
+              <a href="#" onclick="changeLanguage('en')">English</a>
+              <a href="#" onclick="changeLanguage('ms')">Bahasa Melayu</a>
+            </div>
+          </div>
+          <a href="mailto:shirazstore@trackmygts.com,support@shirazstore.shop" class="nav-link" data-lang-key="nav_support">Support</a>
+          <a href="/admin/" class="nav-link" data-lang-key="nav_admin">Admin</a>
+          <a href="/tracking/" class="nav-link" data-lang-key="nav_order">Your Order</a>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Auth Container - shown when not logged in -->
+    <div id="authContainer" class="auth-container"></div>
+
+    <!-- Admin Panel - shown when logged in -->
+    <div id="adminPanel" class="hidden" style="flex: 1;">
+      <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar" id="adminSidebar">
+          <div class="admin-logo">
+            <i class="fas fa-cog"></i> Admin Panel
+          </div>
+          <nav class="admin-nav">
+            <a href="#" class="admin-nav-link active" data-section="dashboard" onclick="showSection('dashboard')">
+              <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+            <a href="#" class="admin-nav-link" data-section="orders" onclick="showSection('orders')">
+              <i class="fas fa-shopping-cart"></i> Orders
+            </a>
+            <a href="#" class="admin-nav-link" data-section="devices" onclick="showSection('devices')">
+              <i class="fas fa-mobile-alt"></i> Devices
+            </a>
+            <a href="#" class="admin-nav-link" data-section="users" onclick="showSection('users')">
+              <i class="fas fa-users"></i> Users
+            </a>
+            <a href="#" class="admin-nav-link" data-section="assets" onclick="showSection('assets')">
+              <i class="fas fa-images"></i> Assets
+            </a>
+            <a href="#" class="admin-nav-link" onclick="handleLogout()">
+              <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+          </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+          <!-- Dashboard Section -->
+          <section id="dashboardSection">
+            <div class="admin-header">
+              <h1 class="admin-title">Dashboard</h1>
+            </div>
+            <div class="devices-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+              <div class="device-card" style="padding: 24px;">
+                <div class="device-model"><i class="fas fa-shopping-cart"></i></div>
+                <div class="device-name" id="totalOrders">0</div>
+                <div class="device-description">Total Orders</div>
+              </div>
+              <div class="device-card" style="padding: 24px;">
+                <div class="device-model"><i class="fas fa-clock"></i></div>
+                <div class="device-name" id="pendingOrders">0</div>
+                <div class="device-description">Pending Orders</div>
+              </div>
+              <div class="device-card" style="padding: 24px;">
+                <div class="device-model"><i class="fas fa-truck"></i></div>
+                <div class="device-name" id="shippedOrders">0</div>
+                <div class="device-description">Shipped Orders</div>
+              </div>
+              <div class="device-card" style="padding: 24px;">
+                <div class="device-model"><i class="fas fa-check-circle"></i></div>
+                <div class="device-name" id="deliveredOrders">0</div>
+                <div class="device-description">Delivered</div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Orders Section -->
+          <section id="ordersSection" class="hidden">
+            <div class="admin-header">
+              <h1 class="admin-title">Orders</h1>
+              <button class="btn btn-primary" onclick="showOrderModal()">
+                <i class="fas fa-plus"></i> New Order
+              </button>
+            </div>
+            <div class="data-table">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Order #</th>
+                    <th>Customer</th>
+                    <th>Device</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="ordersTableBody">
+                  <tr>
+                    <td colspan="6" class="text-center text-muted">Loading...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <!-- Devices Section -->
+          <section id="devicesSection" class="hidden">
+            <div class="admin-header">
+              <h1 class="admin-title">Devices</h1>
+              <button class="btn btn-primary" onclick="showDeviceModal()">
+                <i class="fas fa-plus"></i> Add Device
+              </button>
+            </div>
+            <div class="data-table">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Model</th>
+                    <th>Name</th>
+                    <th>Color</th>
+                    <th>Storage</th>
+                    <th>Price</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="devicesTableBody">
+                  <tr>
+                    <td colspan="6" class="text-center text-muted">Loading...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <!-- Users Section -->
+          <section id="usersSection" class="hidden">
+            <div class="admin-header">
+              <h1 class="admin-title">Users</h1>
+            </div>
+            <div class="data-table">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="usersTableBody">
+                  <tr>
+                    <td colspan="4" class="text-center text-muted">Loading...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <!-- Assets Section -->
+          <section id="assetsSection" class="hidden">
+            <div class="admin-header">
+              <h1 class="admin-title">Assets</h1>
+              <label class="btn btn-primary" style="cursor: pointer;">
+                <i class="fas fa-upload"></i> Upload File
+                <input type="file" id="fileInput" style="display: none;" onchange="handleFileUpload(event)">
+              </label>
+            </div>
+            <div id="assetsGrid" class="devices-grid" style="grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));">
+              <!-- Assets loaded here -->
+            </div>
+          </section>
+
+        </main>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <p data-lang-key="footer_copy">&copy; 2025 Shiraz Apple Store. All rights reserved. Shah Alam, Selangor.</p>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Order Modal -->
+  <div class="modal-overlay" id="orderModal">
+    <div class="modal" style="padding: 5px 12px;">
+      <div class="modal-header" style="margin: 0px 10px; padding: 0px 12px;">
+        <h3 class="modal-title yw_text_editable" id="orderModalTitle">New Order</h3>
+        <button class="btn-icon" onclick="closeModal('orderModal')">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="orderForm" style="margin: 0px 10px; padding: 0px 12px;">
+          <input type="hidden" id="orderId">
+          <div class="form-group">
+            <label class="form-label">Device</label>
+            <select class="form-select" id="orderDevice" required></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Customer Name</label>
+            <input type="text" class="form-input" id="orderCustomerName" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-input" id="orderCustomerEmail">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone</label>
+            <input type="tel" class="form-input" id="orderCustomerPhone">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Shipping Address</label>
+            <textarea class="form-textarea" id="orderShippingAddress" required></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Color</label>
+            <input type="text" class="form-input" id="orderColor" placeholder="e.g., Space Black">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Storage</label>
+            <input type="text" class="form-input" id="orderStorage" placeholder="e.g., 256GB">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Order Number</label>
+            <input type="text" class="form-input" id="orderNumber" placeholder="Auto-generated if empty">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Waybill</label>
+            <input type="text" class="form-input" id="orderWaybill">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Package Dimensions</label>
+            <input type="text" class="form-input" id="orderPackageDimensions" placeholder="e.g., 10x10x5 cm">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Sender Info</label>
+            <textarea class="form-textarea" id="orderSenderInfo" placeholder="Name, Address, Contact"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Receiver Info</label>
+            <textarea class="form-textarea" id="orderReceiverInfo" placeholder="Name, Address, Contact"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tracking Number</label>
+            <input type="text" class="form-input" id="orderTrackingNumber">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Status</label>
+            <select class="form-select" id="orderStatus">
+              <option value="pending">Pending</option>
+              <option value="processing">Processing</option>
+              <option value="shipped">Shipped</option>
+              <option value="delivered">Delivered</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Notes</label>
+            <textarea class="form-textarea" id="orderNotes"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('orderModal')">Cancel</button>
+        <button class="btn btn-primary" onclick="saveOrder()">Save Order</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Device Modal -->
+  <div class="modal-overlay" id="deviceModal">
+    <div class="modal" style="margin: 12px 0px; padding: 12px;">
+      <div class="modal-header" style="padding: 0px 12px;">
+        <h3 class="modal-title yw_text_editable" id="deviceModalTitle">Add Device</h3>
+        <button class="btn-icon" onclick="closeModal('deviceModal')">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="deviceForm" style="padding: 0px 12px;">
+          <input type="hidden" id="deviceId">
+          <div class="form-group">
+            <label class="form-label">Model</label>
+            <input type="text" class="form-input" id="deviceModel" required placeholder="e.g., iPhone 15 Pro Max">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Name</label>
+            <input type="text" class="form-input" id="deviceName" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Description</label>
+            <textarea class="form-textarea" id="deviceDescription" required></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Color</label>
+            <input type="text" class="form-input" id="deviceColor" value="On admin activation">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Storage</label>
+            <input type="text" class="form-input" id="deviceStorage" value="On admin activation">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Price</label>
+            <input type="text" class="form-input" id="devicePrice" value="Sponsored">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Image URL</label>
+            <input type="text" class="form-input" id="deviceImageUrl" placeholder="https://...">
+            <small style="color: var(--text-secondary);">Upload to Assets first, then copy URL here.</small>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('deviceModal')">Cancel</button>
+        <button class="btn btn-primary" onclick="saveDevice()">Save Device</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Event Modal -->
+  <div class="modal-overlay" id="eventModal">
+    <div class="modal" style="margin: 12px 0px; padding: 12px;">
+      <div class="modal-header" style="padding: 0px 12px;">
+        <h3 class="modal-title yw_text_editable">Add Tracking Event</h3>
+        <button class="btn-icon" onclick="closeModal('eventModal')">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="eventForm" style="padding: 0px 12px;">
+          <input type="hidden" id="eventOrderId">
+          <div class="form-group">
+            <label class="form-label">Date</label>
+            <input type="date" class="form-input" id="eventDate" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Location</label>
+            <input type="text" class="form-input" id="eventLocation" required placeholder="e.g., Warehouse, Transit Hub">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Description</label>
+            <textarea class="form-textarea" id="eventDescription" required placeholder="e.g., Package picked up"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Update Order Status</label>
+            <select class="form-select" id="eventUpdateStatus">
+              <option value="">No change</option>
+              <option value="processing">Processing</option>
+              <option value="shipped">Shipped</option>
+              <option value="delivered">Delivered</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('eventModal')">Cancel</button>
+        <button class="btn btn-primary" onclick="saveEvent()">Add Event</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Link Order Modal -->
+  <div class="modal-overlay" id="linkOrderModal">
+    <div class="modal" style="margin: 0px; padding: 0px 12px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Link Order to User</h3>
+        <button class="btn-icon" onclick="closeModal('linkOrderModal')">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="linkOrderForm">
+          <input type="hidden" id="linkUserId">
+          <div class="form-group" style="margin-bottom: 24px;">
+            <label class="form-label yw_text_editable">Order Number or Tracking Number</label>
+            <input type="text" class="form-input" id="linkOrderIdentifier" required placeholder="e.g., ORD-12345">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('linkOrderModal')">Cancel</button>
+        <button class="btn btn-primary" onclick="saveLinkOrder()">Link Order</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="../js/script.js"></script>
+  <script type="module" src="../js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,520 @@
+/* Scoped styles for Edgespark Auth Client - Based on Figma Design */
+[data-edgespark-auth] {
+  /* Colors - Figma Design Tokens */
+  --edgespark-auth-color-primary: rgba(0, 0, 0, 0.95);
+  --edgespark-auth-color-secondary: rgba(0, 0, 0, 0.65);
+  --edgespark-auth-color-tertiary: rgba(0, 0, 0, 0.45);
+  --edgespark-auth-color-disabled: rgba(0, 0, 0, 0.3);
+  --edgespark-auth-color-text: rgba(0, 0, 0, 0.95);
+  --edgespark-auth-color-text-inverse: #ffffff;
+  --edgespark-auth-color-error: #dc2626;
+  --edgespark-auth-color-success: #16a34a;
+  --edgespark-auth-color-warning: #f59e0b;
+  --edgespark-auth-color-info: #3b82f6;
+  --edgespark-auth-color-border: rgba(0, 0, 0, 0.12);
+  --edgespark-auth-color-border-secondary: rgba(0, 0, 0, 0.06);
+  --edgespark-auth-color-bg: #ffffff;
+  --edgespark-auth-color-bg-secondary: rgba(0, 0, 0, 0.05);
+  --edgespark-auth-color-bg-link: #0077ff;
+  
+  /* Typography - Figma Design */
+  --edgespark-auth-font-family: 'Roboto Flex', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --edgespark-auth-font-size-title: 32px;
+  --edgespark-auth-font-size-body: 14px;
+  --edgespark-auth-font-size-small: 12px;
+  --edgespark-auth-font-weight-bold: 600;
+  --edgespark-auth-font-weight-medium: 580;
+  --edgespark-auth-font-weight-normal: 420;
+  --edgespark-auth-line-height-title: 1.2;
+  --edgespark-auth-line-height-body: 1.4;
+  --edgespark-auth-line-height-small: 1.3;
+  
+  /* Spacing - Figma Design */
+  --edgespark-auth-radius-card: 30px;
+  --edgespark-auth-radius-input: 12px;
+  --edgespark-auth-radius-button: 999px;
+  --edgespark-auth-spacing: 16px;
+  --edgespark-auth-spacing-large: 48px;
+  --edgespark-auth-spacing-medium: 32px;
+  --edgespark-auth-spacing-small: 4px;
+  
+  /* Component Sizes */
+  --edgespark-auth-input-height: 48px;
+  --edgespark-auth-button-height: 48px;
+  --edgespark-auth-card-width: 420px;
+  --edgespark-auth-card-padding: 24px;
+  
+  /* Transitions */
+  --edgespark-auth-transition-duration: 200ms;
+  --edgespark-auth-transition-timing: ease-in-out;
+  
+  /* Code Input */
+  --edgespark-auth-code-input-size: 54px;
+  --edgespark-auth-code-input-gap: 10px;
+}
+
+/* Root Container */
+[data-edgespark-auth] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Card Container */
+[data-edgespark-auth] .edgespark-auth {
+  font-family: var(--edgespark-auth-font-family);
+  color: var(--edgespark-auth-color-text);
+  font-size: var(--edgespark-auth-font-size-body);
+  background: var(--edgespark-auth-color-bg);
+  border-radius: var(--edgespark-auth-radius-card);
+  padding: var(--edgespark-auth-card-padding);
+  max-width: var(--edgespark-auth-card-width);
+  width: 100%;
+  box-sizing: border-box;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Section */
+[data-edgespark-auth] .edgespark-auth__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--edgespark-auth-spacing);
+}
+
+/* Header Styles */
+[data-edgespark-auth] .edgespark-auth__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--edgespark-auth-spacing-small);
+  margin-bottom: var(--edgespark-auth-spacing-large);
+}
+
+/* 当 form 容器有错误时，header 与 form 的间距调整为 32px */
+[data-edgespark-auth] .edgespark-auth__header.has-error-below {
+  margin-bottom: var(--edgespark-auth-spacing-medium) !important;
+}
+
+[data-edgespark-auth] .edgespark-auth__header-title {
+  font-size: var(--edgespark-auth-font-size-title);
+  font-weight: var(--edgespark-auth-font-weight-bold);
+  line-height: var(--edgespark-auth-line-height-title);
+  color: var(--edgespark-auth-color-primary);
+  margin: 0;
+}
+
+[data-edgespark-auth] .edgespark-auth__header-subtitle {
+  font-size: var(--edgespark-auth-font-size-small);
+  font-weight: var(--edgespark-auth-font-weight-normal);
+  line-height: var(--edgespark-auth-line-height-small);
+  color: var(--edgespark-auth-color-tertiary);
+  margin: 0;
+  letter-spacing: 0.036px;
+}
+
+[data-edgespark-auth] .edgespark-auth__highlight {
+  color: var(--edgespark-auth-color-primary);
+  font-weight: var(--edgespark-auth-font-weight-medium);
+}
+
+/* Logo */
+[data-edgespark-auth] .edgespark-auth__logo {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 16px;
+}
+
+/* Email Icon - 邮箱验证页面 */
+[data-edgespark-auth] .edgespark-auth__email-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 10px 0;
+  margin: 0 0 48px 0;
+}
+
+[data-edgespark-auth] .edgespark-auth__email-icon svg {
+  width: 58.667px;
+  height: 48px;
+  flex-shrink: 0;
+}
+
+/* Fields Container */
+[data-edgespark-auth] .edgespark-auth__fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--edgespark-auth-spacing);
+}
+
+/* Form Field */
+[data-edgespark-auth] .edgespark-auth__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+}
+
+[data-edgespark-auth] .edgespark-auth__label {
+  display: none; /* 设计稿中使用 placeholder 代替 label */
+}
+
+/* Input Styles - Figma Design */
+[data-edgespark-auth] .edgespark-auth__input {
+  width: 100%;
+  height: var(--edgespark-auth-input-height);
+  padding: 8px 20px;
+  border: 1px solid var(--edgespark-auth-color-border);
+  border-radius: var(--edgespark-auth-radius-input);
+  font-size: var(--edgespark-auth-font-size-body);
+  font-weight: 400;
+  line-height: var(--edgespark-auth-line-height-body);
+  color: var(--edgespark-auth-color-text);
+  background: var(--edgespark-auth-color-bg);
+  box-sizing: border-box;
+  transition: border-color var(--edgespark-auth-transition-duration) var(--edgespark-auth-transition-timing);
+}
+
+[data-edgespark-auth] .edgespark-auth__input::placeholder {
+  color: var(--edgespark-auth-color-disabled);
+  font-size: var(--edgespark-auth-font-size-body);
+  letter-spacing: 0.07px;
+}
+
+[data-edgespark-auth] .edgespark-auth__input:focus {
+  border-color: var(--edgespark-auth-color-bg-link);
+}
+
+[data-edgespark-auth] .edgespark-auth__input.error {
+  border-color: var(--edgespark-auth-color-error);
+}
+
+/* Button Base - Figma Design */
+[data-edgespark-auth] .edgespark-auth__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: var(--edgespark-auth-button-height);
+  min-width: 72px;
+  padding: 0 16px;
+  border-radius: var(--edgespark-auth-radius-button);
+  border: none;
+  cursor: pointer;
+  font-size: var(--edgespark-auth-font-size-body);
+  font-weight: var(--edgespark-auth-font-weight-medium);
+  line-height: var(--edgespark-auth-line-height-body);
+  letter-spacing: -0.21px;
+  white-space: nowrap;
+  transition: all var(--edgespark-auth-transition-duration) var(--edgespark-auth-transition-timing);
+  box-sizing: border-box;
+  width: 100%;
+}
+
+/* Primary Button - Black background */
+[data-edgespark-auth] .edgespark-auth__btn--primary {
+  background: #2c2c2c;
+  color: var(--edgespark-auth-color-text-inverse);
+}
+
+[data-edgespark-auth] .edgespark-auth__btn--primary:hover {
+  background: rgba(44, 44, 44, 0.9); /* 10% 透明度 */
+}
+
+[data-edgespark-auth] .edgespark-auth__btn--primary:active {
+  background: rgba(0, 0, 0, 0.75);
+}
+
+[data-edgespark-auth] .edgespark-auth__btn--primary:disabled {
+  background: rgba(0, 0, 0, 0.3);
+  color: rgba(255, 255, 255, 0.5);
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* OAuth Button - Gray background */
+[data-edgespark-auth] .edgespark-auth__btn--oauth {
+  background: var(--edgespark-auth-color-bg-secondary);
+  color: var(--edgespark-auth-color-primary);
+  padding: 16px 20px;
+}
+
+[data-edgespark-auth] .edgespark-auth__btn--oauth:hover:not(:disabled) {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+[data-edgespark-auth] .edgespark-auth__btn--oauth:disabled,
+[data-edgespark-auth] .edgespark-auth__btn--oauth.loading {
+  cursor: not-allowed;
+  pointer-events: none;
+  /* 保持按钮完全不透明，只改变文字颜色 */
+  opacity: 1;
+}
+
+/* OAuth 按钮 loading 状态下的文字颜色 */
+[data-edgespark-auth] .edgespark-auth__btn--oauth.loading .edgespark-auth__btn-text {
+  color: rgba(0, 0, 0, 0.3);
+}
+
+[data-edgespark-auth] .edgespark-auth__btn--oauth .edgespark-auth__icon {
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* Provider icon hooks */
+[data-edgespark-auth] .edgespark-auth__icon--google {
+  background-image: url("https://public.edgespark.com/youbase/auth/google.png");
+}
+
+/* Providers Container */
+[data-edgespark-auth] .edgespark-auth__providers {
+  display: flex;
+  flex-direction: column;
+  gap: var(--edgespark-auth-spacing);
+}
+
+/* Divider - Figma Design */
+[data-edgespark-auth] .edgespark-auth__divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 0 12px;
+  margin: 0;
+  text-align: center;
+  color: var(--edgespark-auth-color-disabled);
+  font-size: var(--edgespark-auth-font-size-small);
+  font-weight: var(--edgespark-auth-font-weight-normal);
+  line-height: var(--edgespark-auth-line-height-small);
+  letter-spacing: 0.036px;
+  position: relative;
+}
+
+[data-edgespark-auth] .edgespark-auth__divider::before,
+[data-edgespark-auth] .edgespark-auth__divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--edgespark-auth-color-border-secondary);
+}
+
+/* Error Message - Figma Design */
+[data-edgespark-auth] .edgespark-auth__error {
+  color: #d42727; /* Figma design: --bg/error */
+  font-size: var(--edgespark-auth-font-size-small);
+  font-weight: var(--edgespark-auth-font-weight-normal);
+  line-height: var(--edgespark-auth-line-height-small);
+  letter-spacing: 0.036px;
+  margin: 0; /* 使用 form 容器的 gap 控制间距 */
+}
+
+[data-edgespark-auth] .edgespark-auth__warning {
+  color: var(--edgespark-auth-color-warning);
+  font-size: var(--edgespark-auth-font-size-small);
+}
+
+[data-edgespark-auth] .edgespark-auth__info {
+  color: var(--edgespark-auth-color-info);
+  font-size: var(--edgespark-auth-font-size-small);
+}
+
+/* Footer / Link - Figma Design */
+[data-edgespark-auth] .edgespark-auth__footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin: 0;
+}
+
+[data-edgespark-auth] .edgespark-auth__footer-text {
+  font-size: var(--edgespark-auth-font-size-small);
+  font-weight: var(--edgespark-auth-font-weight-normal);
+  line-height: var(--edgespark-auth-line-height-small);
+  color: var(--edgespark-auth-color-tertiary);
+  letter-spacing: 0.036px;
+}
+
+[data-edgespark-auth] .edgespark-auth__link {
+  color: var(--edgespark-auth-color-tertiary);
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-skip-ink: none;
+  text-underline-position: from-font;
+  font-size: var(--edgespark-auth-font-size-small);
+  font-weight: var(--edgespark-auth-font-weight-normal);
+  line-height: var(--edgespark-auth-line-height-small);
+  letter-spacing: 0.036px;
+}
+
+[data-edgespark-auth] .edgespark-auth__link:hover {
+  color: var(--edgespark-auth-color-primary);
+}
+
+/* CodeInput styles - responsive */
+[data-edgespark-auth] .edgespark-auth__code-input {
+  display: flex;
+  gap: var(--edgespark-auth-code-input-gap);
+  justify-content: center;
+  width: 100%;
+}
+
+[data-edgespark-auth] .edgespark-auth__code-input-digit {
+  flex: 1;
+  max-width: var(--edgespark-auth-code-input-size);
+  min-width: 0;
+  aspect-ratio: 1;
+  text-align: center;
+  font-size: clamp(16px, 5vw, 24px);
+  font-weight: 600;
+  border: 1px solid var(--edgespark-auth-color-border);
+  border-radius: var(--edgespark-auth-radius-input);
+  outline: none;
+  transition: border-color var(--edgespark-auth-transition-duration) var(--edgespark-auth-transition-timing);
+}
+
+[data-edgespark-auth] .edgespark-auth__code-input-digit:focus {
+  border-color: var(--edgespark-auth-color-bg-link);
+  box-shadow: 0 0 0 3px rgba(0, 119, 255, 0.15);
+}
+
+[data-edgespark-auth] .edgespark-auth__code-input-digit.error {
+  border-color: var(--edgespark-auth-color-error);
+}
+
+/* Spinner styles */
+[data-edgespark-auth] .edgespark-auth__spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: edgespark-auth-spin 0.6s linear infinite;
+}
+
+/* OAuth 按钮中的 spinner 样式（黑色/灰色） */
+[data-edgespark-auth] .edgespark-auth__btn--oauth .edgespark-auth__spinner {
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  border-top-color: rgba(0, 0, 0, 0.4);
+  margin-right: 10px; /* 与文字之间的间距 */
+}
+
+@keyframes edgespark-auth-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Back button */
+[data-edgespark-auth] .edgespark-auth__back-button {
+  background: none;
+  border: none;
+  color: var(--edgespark-auth-color-bg-link);
+  cursor: pointer;
+  padding: 8px 0;
+  font-size: var(--edgespark-auth-font-size-small);
+  text-decoration: underline;
+}
+
+/* Disabled styles */
+[data-edgespark-auth] .edgespark-auth__input:disabled,
+[data-edgespark-auth] .edgespark-auth__btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Button loading state */
+[data-edgespark-auth] .edgespark-auth__btn.loading {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Guest Account Link - Below card */
+[data-edgespark-auth] .edgespark-auth__guest-link {
+  font-size: var(--edgespark-auth-font-size-body);
+  font-weight: 400;
+  line-height: var(--edgespark-auth-line-height-body);
+  color: var(--edgespark-auth-color-secondary);
+  text-align: center;
+  letter-spacing: 0.07px;
+}
+
+[data-edgespark-auth] .edgespark-auth__guest-link a {
+  text-decoration: underline;
+  text-decoration-skip-ink: none;
+  text-underline-position: from-font;
+  color: var(--edgespark-auth-color-secondary);
+}
+
+[data-edgespark-auth] .edgespark-auth__guest-link a:hover {
+  color: var(--edgespark-auth-color-primary);
+}
+
+/* ============================================
+   Skeleton Loading Placeholder
+   ============================================ */
+
+/* 骨架屏卡片 - 复用现有 CSS 变量 */
+[data-edgespark-auth] .edgespark-auth__skeleton {
+  font-family: var(--edgespark-auth-font-family);
+  background: var(--edgespark-auth-color-bg);
+  border-radius: var(--edgespark-auth-radius-card);
+  padding: var(--edgespark-auth-card-padding);
+  max-width: var(--edgespark-auth-card-width);
+  width: 100%;
+  box-sizing: border-box;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* 骨架元素基础样式 */
+[data-edgespark-auth] .edgespark-auth__skeleton-item {
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.06) 25%,
+    rgba(0, 0, 0, 0.03) 50%,
+    rgba(0, 0, 0, 0.06) 75%
+  );
+  background-size: 200% 100%;
+  animation: edgespark-auth-skeleton-shimmer 1.5s ease-in-out infinite;
+  border-radius: 4px;
+}
+
+/* 标题骨架 */
+[data-edgespark-auth] .edgespark-auth__skeleton-title {
+  height: 38px;
+  width: 50%;
+  margin-bottom: var(--edgespark-auth-spacing-small);
+}
+
+/* 副标题骨架 */
+[data-edgespark-auth] .edgespark-auth__skeleton-subtitle {
+  height: 16px;
+  width: 35%;
+  margin-bottom: var(--edgespark-auth-spacing-large);
+}
+
+/* 输入框骨架 */
+[data-edgespark-auth] .edgespark-auth__skeleton-input {
+  height: var(--edgespark-auth-input-height);
+  width: 100%;
+  border-radius: var(--edgespark-auth-radius-input);
+  margin-bottom: var(--edgespark-auth-spacing);
+}
+
+/* 按钮骨架 */
+[data-edgespark-auth] .edgespark-auth__skeleton-button {
+  height: var(--edgespark-auth-button-height);
+  width: 100%;
+  border-radius: var(--edgespark-auth-radius-button);
+  margin-top: var(--edgespark-auth-spacing);
+}
+
+/* 骨架动画 */
+@keyframes edgespark-auth-skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

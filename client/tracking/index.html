@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Track Order - Shiraz Apple Store</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/style.css">
+  <script>window.process = { env: { NODE_ENV: 'production' } };</script>
+</head>
+<body>
+  <div class="page-wrapper">
+    <!-- Header -->
+    <header class="header">
+      <div class="container header-content">
+        <a href="/" class="logo">
+          <img src="../assets/shiraz-logo.png" alt="Shiraz Apple Store">
+          <div class="logo-text">
+            <span class="logo-title">Shiraz Apple Store</span>
+            <span class="logo-subtitle">Apple Authorized Service Provider</span>
+          </div>
+        </a>
+        <button class="mobile-menu-btn">
+          <i class="fas fa-bars"></i>
+        </button>
+        <nav class="nav" id="mainNav">
+          <div class="dropdown">
+            <button onclick="toggleLangMenu()" class="nav-link lang-btn" id="langBtn" data-lang-key="nav_language">Language</button>
+            <div id="langMenu" class="lang-content">
+              <a href="#" onclick="changeLanguage('en')">English</a>
+              <a href="#" onclick="changeLanguage('ms')">Bahasa Melayu</a>
+            </div>
+          </div>
+          <a href="mailto:shirazstore@trackmygts.com,support@shirazstore.shop" class="nav-link" data-lang-key="nav_support">Support</a>
+          <a href="/admin/" class="nav-link" data-lang-key="nav_admin">Admin</a>
+          <a href="/tracking/" class="nav-link" data-lang-key="nav_order">Your Order</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container">
+      <!-- Sign In Section (Default View) -->
+      <section id="signInSection" class="hero" style="padding-bottom: 20px; max-width: 600px; margin: 0 auto; text-align: center;">
+        <h1 class="hero-title" style="font-size: 40px; margin-bottom: 10px;" data-lang-key="signin_title">Sign in to track.</h1>
+        <p class="hero-desc" style="margin: 0 auto 40px; font-size: 17px;" data-lang-key="signin_desc">
+          View your order details, status, and delivery timeline.
+        </p>
+        
+        <form class="track-form" onsubmit="handleTrack(event)" style="text-align: left;">
+          <div class="form-group">
+            <input type="email" class="form-input" id="trackingEmail" placeholder="Email Address" required 
+                   style="padding: 16px; border-radius: 12px; font-size: 17px; margin-bottom: 16px;">
+          </div>
+          <div class="form-group">
+            <input type="text" class="form-input" id="trackingInput" placeholder="Order Number or Tracking Number" required 
+                   style="padding: 16px; border-radius: 12px; font-size: 17px; margin-bottom: 24px;">
+          </div>
+          <button type="submit" id="trackBtn" data-lang-key="signin_btn"
+                  style="width: 100%; background: var(--primary-color); color: white; border: none; padding: 16px; border-radius: 12px; font-size: 17px; font-weight: 600; cursor: pointer;">
+            Sign In
+          </button>
+        </form>
+
+        <div style="margin-top: 40px; border-top: 1px solid var(--border-color); padding-top: 20px; text-align: left;">
+          <h3 style="font-size: 17px; font-weight: 600; margin-bottom: 10px;" data-lang-key="profile_title">My Profile</h3>
+          <ul style="list-style: none; padding: 0;">
+            <li style="margin-bottom: 12px;"><a href="#" style="color: var(--text-primary); text-decoration: none; font-size: 14px;" data-lang-key="profile_fav">Favourites</a></li>
+            <li style="margin-bottom: 12px;"><a href="#" style="color: var(--text-primary); text-decoration: none; font-size: 14px;" data-lang-key="profile_orders">Orders</a></li>
+            <li style="margin-bottom: 12px;"><a href="#" style="color: var(--text-primary); text-decoration: none; font-size: 14px;" data-lang-key="profile_account">Account</a></li>
+            <li style="margin-bottom: 12px;"><a href="#" style="color: var(--text-primary); text-decoration: none; font-size: 14px;" data-lang-key="profile_signin">Sign in</a></li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Tracking Results (Hidden by default) -->
+      <section id="trackingSection" class="tracking-section hidden" style="padding-top: 20px;">
+        <div style="margin-bottom: 20px;">
+          <button onclick="showSignIn()" style="background: none; border: none; color: var(--primary-color); cursor: pointer; font-size: 14px;">
+            ‹ Back to Sign In
+          </button>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loadingState" class="hidden" style="text-align: center; padding: 40px;">
+          <i class="fas fa-spinner fa-spin" style="font-size: 24px; color: var(--text-secondary);"></i>
+          <p style="margin-top: 10px; color: var(--text-secondary);">Accessing your order...</p>
+        </div>
+
+        <!-- Error State -->
+        <div id="errorState" class="hidden" style="padding: 20px; background: #fff2f2; border-radius: 12px; color: #d32f2f; margin-bottom: 20px;">
+          <div id="errorMessage"></div>
+        </div>
+
+        <!-- Results -->
+        <div id="resultsState" class="hidden">
+          <div class="help-card" style="background: var(--bg-secondary); padding: 30px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px;">
+              <div>
+                <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 4px;">Order Number</div>
+                <div id="orderNumber" style="font-size: 21px; font-weight: 600;"></div>
+              </div>
+              <div>
+                <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 4px;">Status</div>
+                <div id="orderStatus" style="font-size: 17px; font-weight: 600; color: var(--primary-color);"></div>
+              </div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; margin-bottom: 40px;">
+              <div>
+                <div style="font-size: 12px; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 8px;">Device</div>
+                <div id="deviceName" style="font-size: 17px; font-weight: 500;"></div>
+                <div id="specifications" style="font-size: 14px; color: var(--text-secondary); margin-top: 4px;"></div>
+              </div>
+              <div>
+                <div style="font-size: 12px; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 8px;">Shipping To</div>
+                <div id="customerName" style="font-size: 17px; font-weight: 500;"></div>
+                <div id="shippingAddress" style="font-size: 14px; color: var(--text-secondary); margin-top: 4px;"></div>
+              </div>
+            </div>
+
+            <div>
+              <h3 style="font-size: 19px; font-weight: 600; margin-bottom: 20px;">History</h3>
+              <div id="timeline" style="border-left: 2px solid var(--border-color); padding-left: 20px; margin-left: 10px;">
+                <!-- Timeline items -->
+              </div>
+              <div id="noEvents" class="hidden" style="color: var(--text-secondary); font-style: italic;">No tracking events yet.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <p data-lang-key="footer_copy">&copy; 2025 Shiraz Apple Store. All rights reserved. Shah Alam, Selangor.</p>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script type="module" src="../js/script.js"></script>
+  <script>
+    function handleTrack(e) {
+      e.preventDefault();
+      const email = document.getElementById('trackingEmail').value.trim();
+      const number = document.getElementById('trackingInput').value.trim();
+      if (email && number) {
+        trackOrder(email, number);
+      }
+    }
+
+    function showSignIn() {
+      document.getElementById('signInSection').classList.remove('hidden');
+      document.getElementById('trackingSection').classList.add('hidden');
+      document.getElementById('resultsState').classList.add('hidden');
+      document.getElementById('errorState').classList.add('hidden');
+    }
+  </script>
+</body>
+</html>

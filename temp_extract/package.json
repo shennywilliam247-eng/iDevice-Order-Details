@@ -1,0 +1,50 @@
+{
+  "devDependencies": {
+    "@edgespark/cli": "^0.0.5"
+  },
+  "name": "workspace",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "@edgespark/client": "^1.0.3",
+    "ansi-regex": "^6.2.2",
+    "big-integer": "^1.6.52",
+    "chalk": "^5.6.2",
+    "cli-cursor": "^5.0.0",
+    "cli-spinners": "^3.3.0",
+    "commander": "^14.0.2",
+    "es-module-lexer": "^2.0.0",
+    "esbuild": "^0.27.2",
+    "fs-extra": "^11.3.3",
+    "get-east-asian-width": "^1.4.0",
+    "graceful-fs": "^4.2.11",
+    "hono": "^4.11.3",
+    "is-interactive": "^2.0.0",
+    "is-unicode-supported": "^2.1.0",
+    "jsonfile": "^6.2.0",
+    "log-symbols": "^7.0.1",
+    "mimic-function": "^5.0.1",
+    "node-sql-parser": "^5.3.13",
+    "onetime": "^7.0.0",
+    "ora": "^9.0.0",
+    "restore-cursor": "^5.1.0",
+    "signal-exit": "^4.1.0",
+    "stdin-discarder": "^0.2.2",
+    "string-width": "^8.1.0",
+    "strip-ansi": "^7.1.2",
+    "universalify": "^2.0.1",
+    "vite": "^7.3.1",
+    "yoctocolors": "^2.1.2"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "deploy:backend": "cd backend && npx edgespark deploy",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

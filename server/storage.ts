@@ -1,23 +1,23 @@
-import { type User, type InsertUser } from "@shared/schema";
-import { randomUUID } from "crypto";
-
-// modify the interface with any CRUD methods
-// you might need
+import { users, type User, type InsertUser } from "@shared/schema";
+// This file is kept for compatibility but not used by the main routes for now
+// as we ported the direct DB access logic.
 
 export interface IStorage {
-  getUser(id: string): Promise<User | undefined>;
+  getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
 }
 
 export class MemStorage implements IStorage {
-  private users: Map<string, User>;
+  private users: Map<number, User>;
+  private currentId: number;
 
   constructor() {
     this.users = new Map();
+    this.currentId = 1;
   }
 
-  async getUser(id: string): Promise<User | undefined> {
+  async getUser(id: number): Promise<User | undefined> {
     return this.users.get(id);
   }
 
@@ -28,7 +28,7 @@ export class MemStorage implements IStorage {
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const id = randomUUID();
+    const id = this.currentId++;
     const user: User = { ...insertUser, id };
     this.users.set(id, user);
     return user;
