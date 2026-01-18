@@ -2,7 +2,7 @@ import { createEdgeSpark } from "./edgespark-client.js";
 
 // Initialize Client
 const client = createEdgeSpark({
-  baseUrl: "https://staging--lujlgtmiqfc8uzc6ury0.youbase.cloud"
+  baseUrl: window.location.origin
 });
 
 // State
@@ -23,42 +23,23 @@ async function checkAuth() {
   const adminPanel = document.getElementById('adminPanel');
   
   try {
-    const session = await client.auth.getSession();
+    // For local dev with static pages, we'll mock auth for now
+    // In a real scenario, this would check against the backend
+    const res = await client.api.fetch('/api/users/sync', { method: 'POST' });
+    const data = await res.json();
     
-    if (session.data?.user) {
-      // User is logged in
-      
-      // Sync user to DB and check role
-      const res = await client.api.fetch('/api/users/sync', { method: 'POST' });
-      const data = await res.json();
-      
-      if (data.user?.role !== 'admin') {
-        // Not admin
-        authContainer.innerHTML = `
-          <div class="auth-container" style="text-align: center;">
-            <h2 style="color: #dc2626; margin-bottom: 16px;">Access Denied</h2>
-            <p style="margin-bottom: 24px;">You do not have permission to access the admin panel.</p>
-            <button onclick="handleLogout()" class="btn btn-primary">Sign Out</button>
-            <br><br>
-            <a href="/" class="btn btn-secondary">Go Home</a>
-          </div>
-        `;
-        authContainer.classList.remove('hidden');
-        adminPanel.classList.add('hidden');
-        return;
-      }
-
+    if (data.user?.role === 'admin') {
       authContainer.classList.add('hidden');
       adminPanel.classList.remove('hidden');
-      
       await initAdmin();
     } else {
-      // Show login
-      authContainer.classList.remove('hidden');
-      adminPanel.classList.add('hidden');
-      await client.auth.renderAuthUI(authContainer, {
-        redirectTo: window.location.href
-      });
+      authContainer.innerHTML = `
+        <div class="auth-container" style="text-align: center;">
+          <h2 style="color: #dc2626; margin-bottom: 16px;">Access Denied</h2>
+          <p style="margin-bottom: 24px;">You do not have permission to access the admin panel.</p>
+          <a href="/" class="btn btn-secondary">Go Home</a>
+        </div>
+      `;
     }
   } catch (error) {
     console.error('Auth error:', error);
@@ -80,12 +61,7 @@ async function initAdmin() {
 // Logout
 // ============================================
 window.handleLogout = async function() {
-  try {
-    await client.auth.signOut();
-    window.location.reload();
-  } catch (error) {
-    console.error('Logout error:', error);
-  }
+  window.location.href = "/";
 }
 
 // ============================================
@@ -135,11 +111,11 @@ function renderDevicesTable() {
   
   tbody.innerHTML = devicesCache.map(device => `
     <tr>
-      <td>${device.model}</td>
+      <td>${device.model || ''}</td>
       <td>${device.name}</td>
-      <td>${device.color}</td>
-      <td>${device.storage}</td>
-      <td>${device.price}</td>
+      <td>${device.color || ''}</td>
+      <td>${device.storage || ''}</td>
+      <td>${device.price || ''}</td>
       <td>
         <button class="btn-icon" onclick="editDevice(${device.id})" title="Edit">
           <i class="fas fa-edit"></i>
@@ -165,12 +141,12 @@ window.showDeviceModal = function(id = null) {
   if (id) {
     const device = devicesCache.find(d => d.id === id);
     if (device) {
-      document.getElementById('deviceModel').value = device.model;
+      document.getElementById('deviceModel').value = device.model || '';
       document.getElementById('deviceName').value = device.name;
-      document.getElementById('deviceDescription').value = device.description;
-      document.getElementById('deviceColor').value = device.color;
-      document.getElementById('deviceStorage').value = device.storage;
-      document.getElementById('devicePrice').value = device.price;
+      document.getElementById('deviceDescription').value = device.description || '';
+      document.getElementById('deviceColor').value = device.color || '';
+      document.getElementById('deviceStorage').value = device.storage || '';
+      document.getElementById('devicePrice').value = device.price || '';
       document.getElementById('deviceImageUrl').value = device.imageUrl || '';
     }
   } else {
@@ -294,8 +270,8 @@ window.showOrderModal = function(id = null) {
       document.getElementById('orderNumber').value = order.orderNumber || '';
       document.getElementById('orderWaybill').value = order.waybill || '';
       document.getElementById('orderPackageDimensions').value = order.packageDimensions || '';
-      document.getElementById('orderSenderInfo').value = order.senderInfo || '';
-      document.getElementById('orderReceiverInfo').value = order.receiverInfo || '';
+      document.getElementById('orderSenderInfo').value = order.senderInfo ? JSON.stringify(order.senderInfo) : '';
+      document.getElementById('orderReceiverInfo').value = order.receiverInfo ? JSON.stringify(order.receiverInfo) : '';
     }
   } else {
     document.getElementById('orderForm').reset();
@@ -334,8 +310,8 @@ window.saveOrder = async function() {
     orderNumber: document.getElementById('orderNumber').value,
     waybill: document.getElementById('orderWaybill').value,
     packageDimensions: document.getElementById('orderPackageDimensions').value,
-    senderInfo: document.getElementById('orderSenderInfo').value,
-    receiverInfo: document.getElementById('orderReceiverInfo').value
+    senderInfo: document.getElementById('orderSenderInfo').value ? JSON.parse(document.getElementById('orderSenderInfo').value) : null,
+    receiverInfo: document.getElementById('orderReceiverInfo').value ? JSON.parse(document.getElementById('orderReceiverInfo').value) : null
   };
   
   try {
@@ -419,7 +395,7 @@ function renderUsersTable() {
   tbody.innerHTML = usersCache.map(user => `
     <tr>
       <td>${user.name || 'N/A'}</td>
-      <td>${user.email}</td>
+      <td>${user.email || 'N/A'}</td>
       <td>
         <select onchange="updateRole(${user.id}, this.value)" class="form-select" style="width: auto; padding: 4px 8px;">
           <option value="user" ${user.role === 'user' ? 'selected' : ''}>User</option>
@@ -441,7 +417,6 @@ window.updateRole = async function(id, role) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ role })
     });
-    // alert('Role updated');
   } catch (error) {
     console.error('Update role error:', error);
     alert('Failed to update role');
@@ -595,7 +570,7 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
 // ============================================
 function formatDate(timestamp) {
   if (!timestamp) return 'N/A';
-  const date = new Date(timestamp * 1000);
+  const date = new Date(timestamp);
   return date.toLocaleDateString('en-US', { 
     year: 'numeric', 
     month: 'short', 

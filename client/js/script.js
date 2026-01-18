@@ -2,7 +2,7 @@ import { createEdgeSpark } from "./edgespark-client.js";
 
 // Initialize Client
 const client = createEdgeSpark({
-  baseUrl: ""
+  baseUrl: window.location.origin
 });
 
 // Language Dictionary
